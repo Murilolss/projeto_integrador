@@ -273,7 +273,7 @@ export const ClientController = {
     try {
       const id = Number(req.params.id);
 
-      let client = await prisma.client.findFirstOrThrow({ where: { id, userId: req.logado.id }});
+      let client = await prisma.client.findFirstOrThrow({ where: { id, userId: req.logado.id } });
 
       res.status(200).json(client);
     } catch (err) {
@@ -320,6 +320,18 @@ export const ClientController = {
 
       if (req.body.name) {
         body.name = req.body.name;
+      }
+
+      if (req.body.lastName) {
+        body.lastName = req.body.lastName;
+      }
+
+      if (req.body.companyName) {
+        body.companyName = req.body.companyName;
+      }
+
+      if (req.body.corporateReason) {
+        body.corporateReason = req.body.corporateReason;
       }
 
       if (req.body.document) {
@@ -386,11 +398,7 @@ export const ClientController = {
         return regex.test(body.email);
       }
 
-
-      if (campoVazio(body.name)) {
-        return res.status(400).json({ error: "Preencha o campo Nome" });
-      }
-
+      
       if (campoVazio(body.document)) {
         return res.status(400).json({ error: "Preencha o campo CPF ou CNPJ" });
       }
@@ -408,6 +416,21 @@ export const ClientController = {
         else if (body.document.length === 18) {
           return res.status(409).json({ error: "Já existe um Cliente Cadastrado com esse CNPJ" });
         }
+      }
+
+      const isPF = body.document.length === 14;
+      const isPJ = body.document.length === 18;
+
+
+      if (isPF) {
+        if (campoVazio(body.name)) return res.status(400).json({ error: "Preencha o campo Nome" });
+        if (campoVazio(body.lastName)) return res.status(400).json({ error: "Preencha o campo Sobrenome" });
+      }
+
+
+      if (isPJ) {
+        if (campoVazio(body.companyName)) return res.status(400).json({ error: "Preencha o campo Nome da Empresa" });
+        if (campoVazio(body.corporateReason)) return res.status(400).json({ error: "Preencha o campo Razão Social" });
       }
 
       if (campoVazio(body.cep)) {

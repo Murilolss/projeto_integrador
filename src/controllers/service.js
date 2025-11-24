@@ -234,7 +234,7 @@ export const ServiceController = {
         data: body,
       });
 
-      res.status(200).json(updateService);
+      return res.status(200).json({message: "Serviço Atualizado com Sucesso!"});
     } catch (err) {
       return res.status(404).json({ error: "Não foi Possivél Atualizar o Serviço" });
     }

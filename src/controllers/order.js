@@ -69,7 +69,7 @@ export const OrderController = {
 
       });
       // respondendo 201-criado encapsulando no formato json(order)
-      res.status(201).json(create)
+      res.status(201).json({message: "Ordem de Serviço criada com Sucesso!"})
     }
     catch (error) {
       next(error);
