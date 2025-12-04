@@ -23,9 +23,7 @@ export const UserController = {
         phone,
         site,
         birth,
-
       } = req.body;
-
 
       // Verificção de Email Valido
       function validaemail() {
@@ -98,7 +96,6 @@ export const UserController = {
         return false;
       }
 
-
       if (campoVazio(name)) {
         return res.status(400).json(`O Campo Nome está Vazio`);
       }
@@ -113,15 +110,13 @@ export const UserController = {
 
       //validação de CPF ou CNPJ existente
       const documentt = await prisma.user.findFirst({
-        where: { document }
-      })
+        where: { document },
+      });
 
       if (documentt) {
-
         if (document.length === 14) {
           return res.status(409).json("O CPF Já está cadastrado");
-        }
-        else if (document.length === 18) {
+        } else if (document.length === 18) {
           return res.status(409).json("O CNPJ Já está cadastrado");
         }
       }
@@ -180,7 +175,7 @@ export const UserController = {
 
       // Validação de email existente
       let emaill = await prisma.user.findFirst({
-        where: { email }
+        where: { email },
       });
 
       if (emaill) {
@@ -191,12 +186,12 @@ export const UserController = {
         return res.status(400).json(`O Campo Senha está Vazio`);
       }
 
-
       //validação de senha de pelo menos 8 Caracterer
       if (password.length < 8) {
-        return res.status(422).json("A Senha deve conter no mínimo 8 caracteres");
+        return res
+          .status(422)
+          .json("A Senha deve conter no mínimo 8 caracteres");
       }
-
 
       const hash = await bcrypt.hash(password, 8);
 
@@ -310,6 +305,14 @@ export const UserController = {
         body.isActive = Boolean(req.body.isActive);
       }
 
+      if (
+        typeof req.body.password === "string" &&
+        req.body.password.trim() !== ""
+      ) {
+        const hash = await bcrypt.hash(req.body.password, 10);
+        body.password = hash;
+      }
+
       const id = Number(req.params.id);
 
       const userUpdate = await prisma.user.update({
@@ -331,9 +334,7 @@ export const UserController = {
       });
 
       if (!user) {
-        res
-          .status(404)
-          .json("Usuário com esse email não encontrado");
+        res.status(404).json("Usuário com esse email não encontrado");
         return;
       }
 
@@ -342,19 +343,15 @@ export const UserController = {
         return res.status(404).json("Usuário ou Senha Incorretos");
       }
 
-
       const token = jwt.sign(
         { sub: user.id, email: user.email, name: user.name },
         process.env.JWT_SECRET,
         { expiresIn: "8h" }
       );
 
-      return res.json({ token })
-
-    }
-    catch (e) {
-      next(e)
+      return res.json({ token });
+    } catch (e) {
+      next(e);
     }
   },
-
-}
+};
