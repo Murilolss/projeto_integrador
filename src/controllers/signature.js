@@ -31,6 +31,10 @@ export const SignatureController = {
                 await connectUserToGroup({ userId: Number(req.logado.id), groupId: premium.id });
             }
 
+            else if (type === "Free"){
+              await connectUserToGroup({ userId: Number(req.logado.id), groupId: free.id });
+            }
+              
 
       res.status(201).json(signature);
     } catch (error) {

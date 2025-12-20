@@ -51,6 +51,7 @@ async function main() {
   const rolesData = [
     { name: 'ADMIN',  description: 'Acesso total ao sistema'},
     { name: 'PREMIUM', description: 'Acesso as Todas as funcionalidades'},
+    { name: 'FREE', description: 'Acesso as funcionalidades free'},
     
   ];
 
@@ -63,6 +64,7 @@ async function main() {
   // 2) Cria Groups
   const groupsData = [
     { name: 'Premium', description: 'Acesso as Todas as funcionalidades'},
+    { name: 'Free', description: 'Acesso as Todas Funcionalidades free'},
     { name: 'Admin', description: 'Pode fazer de tudo no site'}
 
 
@@ -80,6 +82,7 @@ async function main() {
   
   await connectRoleToGroup({ groupId: groups['Admin'].id,        roleId: roles.ADMIN.id });
   await connectRoleToGroup({ groupId: groups['Premium'].id,        roleId: roles.PREMIUM.id });
+  await connectRoleToGroup({ groupId: groups['Free'].id,        roleId: roles.FREE.id });
   
 
   // 4) (Opcional) Vincula Users a Groups
