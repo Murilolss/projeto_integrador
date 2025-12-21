@@ -217,6 +217,28 @@ export const UserController = {
         },
       });
 
+      const signature = await prisma.signature.create({
+        data: {
+          type: "Free",
+          isActive: true,
+          userId: user.id
+        }
+      });
+
+      const free = await prisma.group.findFirst({
+        where: { name: "Free" }
+      });
+
+      await prisma.groupUser.create({
+        data: {
+          userId: user.id,
+          groupId: free.id,
+        },
+      });
+
+
+
+
       res.status(200).json("Usuário Cadastrado Com Sucesso");
     } catch (error) {
       next(error);
@@ -329,8 +351,16 @@ export const UserController = {
   async login(req, res, next) {
     try {
       const { email, senha } = req.body;
+
       let user = await prisma.user.findFirst({
-        where: { email: email },
+        where: { email },
+        include: {
+          groups: {
+            include: {
+              group: true
+            }
+          }
+        }
       });
 
       if (!user) {
@@ -341,7 +371,9 @@ export const UserController = {
       const ok = await bcrypt.compare(senha, user.password);
       if (!ok) {
         return res.status(404).json("Usuário ou Senha Incorretos");
-      }
+      };
+
+      const groups = user.groups.map(g => g.group.name);
 
       const token = jwt.sign(
         { sub: user.id, email: user.email, name: user.name },
@@ -349,9 +381,48 @@ export const UserController = {
         { expiresIn: "8h" }
       );
 
-      return res.json({ token });
+      return res.json({
+        token,
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          groups
+        }
+      });
     } catch (e) {
       next(e);
     }
   },
+
+  async me(req, res) {
+    try {
+      const userId = req.logado.id;
+
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+        include: {
+          groups: {
+            include: {
+              group: true,
+            },
+          },
+        },
+      });
+
+      if (!user) {
+        return res.status(404).json({ error: "Usuário não encontrado" });
+      }
+
+      return res.json({
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        groups: user.groups.map(g => g.group.name),
+      });
+    } catch (e) {
+      return res.status(500).json({ error: "Erro interno" });
+    }
+  },
+  
 };

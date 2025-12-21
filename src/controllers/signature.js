@@ -25,7 +25,11 @@ export const SignatureController = {
 
             const premium = await prisma.group.findFirst({
                 where: {name: "Premium"}
-            })
+            });
+
+            const free = await prisma.group.findFirst({
+                where: {name: "Free"}
+            });
 
             if (type === "Premium"){
                 await connectUserToGroup({ userId: Number(req.logado.id), groupId: premium.id });
@@ -33,7 +37,7 @@ export const SignatureController = {
 
             else if (type === "Free"){
               await connectUserToGroup({ userId: Number(req.logado.id), groupId: free.id });
-            }
+            };
               
 
       res.status(201).json(signature);
