@@ -20,8 +20,9 @@ app.use('/clients', verificaToken, clientRoutes)
 app.use('/orders', verificaToken, orderRoutes)
 app.use('/products', verificaToken, productRoutes)
 app.use('/services', verificaToken, serviceRoutes)
+app.use('/signatures', signatureRoutes)
+// app.use('/signatures', verificaToken, signatureRoutes) Desativado para testes, por favor reativar quando subir o teste
 app.use('/shops', shopRoutes)
-app.use('/signatures', verificaToken, signatureRoutes)
 app.use('/users', userRoutes)
 app.use('/groups', GroupRoutes)
 

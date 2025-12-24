@@ -216,18 +216,20 @@ export const UserController = {
           birth,
         },
       });
-
-      const signature = await prisma.signature.create({
-        data: {
-          type: "Free",
-          isActive: true,
-          userId: user.id
-        }
-      });
-
+      
       const free = await prisma.group.findFirst({
         where: { name: "Free" }
       });
+
+      await prisma.signature.create({
+        data: {
+          type: "Free",
+          isActive: true,
+          userId: user.id,
+          groupId: free.id
+        }
+      });
+
 
       await prisma.groupUser.create({
         data: {
@@ -424,5 +426,5 @@ export const UserController = {
       return res.status(500).json({ error: "Erro interno" });
     }
   },
-  
+
 };

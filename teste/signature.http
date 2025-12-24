@@ -10,6 +10,10 @@ Authorization: Bearer {{token}}
     "isActive": true
 }
 
+### Criqando Plano de Assinatura
+POST http://localhost:3000/signatures/plan HTTP/1.1
+Content-Type: application/json
+
 
 ### Ler Todos as Assinaturas
 GET http://localhost:3000/signatures HTTP/1.1

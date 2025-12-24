@@ -5,6 +5,10 @@ import { verificaToken } from "../middlewares/auth.js";
 const route  = new Router();
 
 route.post('/', verificaToken, SignatureController.store);
+
+// Plano Mercado Pago
+route.post('/plan', SignatureController.planmp);
+
 route.get('/', verificaToken, SignatureController.index);
 route.get('/:id', SignatureController.show);
 route.delete('/:id', SignatureController.del);
